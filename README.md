@@ -5,7 +5,8 @@ This is a quick hack I put together to solve wordle games
 ### Usage
 
 Since this was put together as a real hack, there isn't a lot of UI to it.  You edit
-code and run between guesses in your game
+the [code](https://github.com/jcmendez/wSolver/blob/53bd87645668efed61eda918961ea56a242b14f4/MyPlayground.playground/Contents.swift)
+and run between guesses in your game
 
 Around line 50 in the playground, there are these variables:
 https://github.com/jcmendez/wSolver/blob/5a8ca5ed87ffa340645053cefd94c4701b60c4e8/MyPlayground.playground/Contents.swift#L50
