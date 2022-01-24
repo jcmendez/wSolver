@@ -69,7 +69,7 @@ func simpleAddFreq(word: String) -> Double {
 
 // Solution approach:
 // Put 'IRATE', 'ROATE' or 'OUIJA' as first guess
-// Until not solved:
+// Until solved:
 // * Use results to add to arrays:
 //   - any green gets added to greenLettersPattern in the correct position
 //   - all grays get added to grayLetters
@@ -91,6 +91,4 @@ for guess in yellowGuesses {
   wordList = wordList.filter { $0.range(of: guess, options: .regularExpression) != nil }
 }
 print(wordList.sorted(by: { simpleAddFreq(word: $0) > simpleAddFreq(word: $1) }))
-//assert(wordContainsLetter(word: "POOP", letter: "K") == false)
-//assert(wordContainsLetter(word: "POOP", letter: "P") == true)
 
