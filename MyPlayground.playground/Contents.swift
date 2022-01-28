@@ -32,7 +32,7 @@ let freqDict : [Character: Double] = [
 /*
  * Words can be imported with
  * aspell -d en dump master | aspell -l en expand | sed -E -e 's/\w*\'//g;s/[[:blank:]]+/\n/g' | awk '{ if (length($0) == 5) print toupper($0) }' | uniq > words_en
- * aspell -d es dump master | aspell -l es expand | sed -E -e 's/[[:blank:]]+/\n/g' | iconv -f utf8 -t ascii | awk '{ if (length($0) == 5) print toupper($0) }' | uniq > words_es
+ * aspell -d es dump master | aspell -l es expand | sed -E -e 's/[[:blank:]]+/\n/g;' | sed -n -e '/^.....$/p' | uniq | awk '{ print toupper($0) }' > MyPlayground.playground/Resources/words_es.txt
  */
 var wordList = [String]()
 if let path = Bundle.main.path(forResource: "words_en", ofType: "txt", inDirectory: nil),
@@ -47,10 +47,10 @@ var yellowDiscards = [String]()
 var grayLetters = [Character]()
 
 
-let greenLettersPattern = "FRE.."
-yellowGuesses = [".*E.*"]
-yellowDiscards = ["....[^E]"]
-grayLetters = ["I","A","T","O","N"]
+let greenLettersPattern = "....."
+//yellowGuesses = [".*A.*",".*T.*"]
+//yellowDiscards = ["[^A]....","[^T]....","...[^A]."]
+//grayLetters = Array("IREONS")
 
 func wordContainsLetter(word: String, letter: Character) -> Bool {
   return word.contains(letter)
@@ -64,7 +64,7 @@ func wordContainsGrayLetters(word: String) -> Bool {
 
 func simpleAddFreq(word: String) -> Double {
   let chars = Set(Array(word))
-  return chars.reduce(0.0) { $0 + freqDict[$1]! }
+  return chars.reduce(0.0) { $0 + (freqDict[$1] ?? 0) }
 }
 
 // Solution approach:
@@ -90,5 +90,5 @@ for discard in yellowDiscards {
 for guess in yellowGuesses {
   wordList = wordList.filter { $0.range(of: guess, options: .regularExpression) != nil }
 }
-print(wordList.sorted(by: { simpleAddFreq(word: $0) > simpleAddFreq(word: $1) }))
+print(wordList.count, wordList.sorted(by: { simpleAddFreq(word: $0) > simpleAddFreq(word: $1) }))
 
