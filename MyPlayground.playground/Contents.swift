@@ -1,33 +1,17 @@
 import Cocoa
 
-let freqDict : [Character: Double] = [
-  "A": 0.0849748862031078,
-  "B": 0.0207188824360383,
-  "C": 0.0453814157902998,
-  "D": 0.0338447653429603,
-  "E": 0.11159943493957,
-  "F": 0.0181290221315335,
-  "G": 0.0247017736619055,
-  "H": 0.0300384555014911,
-  "I": 0.0754394914456129,
-  "J": 0.0019620153822006,
-  "K": 0.0110069062941453,
-  "L": 0.0548971903939727,
-  "M": 0.0301365562706012,
-  "N": 0.0665515617642442,
-  "O": 0.0716331816041438,
-  "P": 0.0316669282687176,
-  "Q": 0.0019620153822006,
-  "R": 0.075812274368231,
-  "S": 0.0573497096217234,
-  "T": 0.0695142049913671,
-  "U": 0.036316904724533,
-  "V": 0.0100651389106891,
-  "W": 0.0128904410610579,
-  "X": 0.00290378276565688,
-  "Y": 0.0177758593627374,
-  "Z": 0.00272720138125883
-]
+let lang = "en"
+
+typealias FreqTable = [String: Double]
+var freqDict = FreqTable()
+do {
+  let data = try Data(contentsOf: URL(fileReferenceLiteralResourceName: "freq_\(lang).json"))
+  let decoder = JSONDecoder()
+  freqDict = try decoder.decode(FreqTable.self, from: data)
+} catch {
+  print ("Unable to open")
+  abort()
+}
 
 /*
  * Words can be imported with
@@ -35,12 +19,13 @@ let freqDict : [Character: Double] = [
  * aspell -d es dump master | aspell -l es expand | sed -E -e 's/[[:blank:]]+/\n/g;' | sed -n -e '/^.....$/p' | uniq | awk '{ print toupper($0) }' > MyPlayground.playground/Resources/words_es.txt
  */
 var wordList = [String]()
-if let path = Bundle.main.path(forResource: "words_en", ofType: "txt", inDirectory: nil),
+if let path = Bundle.main.path(forResource: "words_\(lang)", ofType: "txt", inDirectory: nil),
    let contents = try? String(contentsOfFile: path) {
   let lines = contents.split(separator:"\n")
   wordList = lines.map {String($0)}
 } else {
   print ("Unable to open")
+  abort()
 }
 var yellowGuesses = [String]()
 var yellowDiscards = [String]()
@@ -64,7 +49,7 @@ func wordContainsGrayLetters(word: String) -> Bool {
 
 func simpleAddFreq(word: String) -> Double {
   let chars = Set(Array(word))
-  return chars.reduce(0.0) { $0 + (freqDict[$1] ?? 0) }
+  return chars.reduce(0.0) { $0 + (freqDict[String($1)] ?? 0) }
 }
 
 // Solution approach:
